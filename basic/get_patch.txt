@@ -1,0 +1,40 @@
+import os
+import torch.utils.data as data
+import numpy as np
+from PIL import Image
+import glob
+import random
+import torch.nn.functional as F
+import torch
+import torch.nn as nn
+
+
+def get_patch(patch_num,patchSize,fake,real):
+    if patch_num > 0:
+        if fake.shape != real.shape:
+            print('--------------------------------')
+            print('Error:fake.shape != real.shape')
+            print('--------------------------------')
+            raise ValueError
+        fake_patch = []
+        real_patch = []
+        w = fake.size(3)
+        h = fake.size(2)
+        for i in range(patch_num):
+            w_offset_1 = random.randint(0, max(0, w - patchSize - 1))
+            h_offset_1 = random.randint(0, max(0, h - patchSize - 1))
+            fake_patch.append(fake[:,:, h_offset_1:h_offset_1 + patchSize,
+                w_offset_1:w_offset_1 + patchSize])
+            real_patch.append(real[:,:, h_offset_1:h_offset_1 + patchSize,
+                w_offset_1:w_offset_1 + patchSize])
+        return fake_patch,real_patch
+            
+if __name__ == '__main__':
+    fake = torch.rand(1,3,400,400)
+    real = torch.rand(1,3,400,400)
+    o1,o2 = get_patch(2,20,fake,real)
+    print(o1.shape)    
+    
+ 
+ 
+ 
